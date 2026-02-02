@@ -1,10 +1,15 @@
-const story = document.getElementById("story");
-const input = document.getElementById("action");
-const button = document.getElementById("send");
+const API_URL = "https://aaa-ia-quest-api.lalonso.workers.dev";
 
-button.onclick = () => {
-  const text = input.value;
-  input.value = "";
+async function sendAction(text) {
+  const res = await fetch(API_URL, {
+    method: "POST", // importante, no GET
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: [{ role: "user", content: text }] })
+  });
 
-  story.innerText += "\n> " + text;
-};
+  const data = await res.json();
+  const reply = data.choices[0].message.content;
+
+  const story = document.getElementById("story");
+  story.innerText += "\n\n" + reply;
+}
