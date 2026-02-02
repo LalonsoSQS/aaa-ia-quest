@@ -5,23 +5,18 @@ const button = document.getElementById("send");
 // URL de tu Worker
 const API_URL = "https://aaa-ia-quest-api.lalonso.workers.dev";
 
-// API Key temporal para pruebas
-const OPENAI_API_KEY = "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";
+// Tu API Key temporal (solo para pruebas)
+const OPENAI_API_KEY = "TU_API_KEY_DE_OPENAI";
 
 // Mensajes iniciales
 let messages = [
   {
     role: "system",
-    content: `
-Eres un narrador de aventuras tipo RPG.
-Habla en segunda persona.
-Describe escenas cortas y evocadoras.
-Da siempre 3 opciones numeradas.
-No salgas nunca del personaje.
-`
+    content: "Eres un narrador de aventuras RPG, da 3 opciones numeradas."
   }
 ];
 
+// Función para enviar la acción al Worker
 async function sendAction(text) {
   messages.push({ role: "user", content: text });
 
@@ -36,17 +31,19 @@ async function sendAction(text) {
     });
 
     const data = await res.json();
-    const reply = data.choices[0].message.content;
 
+    // Mostrar respuesta en la pantalla
+    const reply = data.choices[0].message.content;
     messages.push({ role: "assistant", content: reply });
     story.innerText += "\n\n" + reply;
+
   } catch (err) {
     story.innerText += "\n\n[Error al conectar con la IA]";
     console.error(err);
   }
 }
 
-// Enviar texto al hacer click
+// Detectar click en el botón
 button.addEventListener("click", () => {
   const text = input.value;
   if (!text) return;
@@ -56,6 +53,7 @@ button.addEventListener("click", () => {
   sendAction(text);
 });
 
-// Comenzar la aventura automáticamente
+// Comenzar la historia
 sendAction("Comienza la aventura");
+
 
