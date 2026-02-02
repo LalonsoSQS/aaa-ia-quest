@@ -1,3 +1,4 @@
+// Elementos del HTML
 const story = document.getElementById("story");
 const input = document.getElementById("action");
 const button = document.getElementById("send");
@@ -5,35 +6,30 @@ const button = document.getElementById("send");
 // URL de tu Worker
 const API_URL = "https://aaa-ia-quest-api.lalonso.workers.dev";
 
-// Tu API Key temporal (solo para pruebas)
-const OPENAI_API_KEY = "TU_API_KEY_DE_OPENAI";
-
-// Mensajes iniciales
+// Mensajes iniciales (historia)
 let messages = [
   {
     role: "system",
-    content: "Eres un narrador de aventuras RPG, da 3 opciones numeradas."
+    content: "Eres un narrador de aventuras tipo RPG. Describe escenas cortas y da 3 opciones numeradas. Mantente siempre en personaje."
   }
 ];
 
-// Función para enviar la acción al Worker
+// Función que envía la acción del jugador al Worker
 async function sendAction(text) {
   messages.push({ role: "user", content: text });
 
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages })
     });
 
     const data = await res.json();
 
-    // Mostrar respuesta en la pantalla
+    // Tomamos la respuesta del asistente
     const reply = data.choices[0].message.content;
+
     messages.push({ role: "assistant", content: reply });
     story.innerText += "\n\n" + reply;
 
@@ -43,9 +39,9 @@ async function sendAction(text) {
   }
 }
 
-// Detectar click en el botón
+// Detectar click en el botón "Enviar"
 button.addEventListener("click", () => {
-  const text = input.value;
+  const text = input.value.trim();
   if (!text) return;
 
   input.value = "";
@@ -53,7 +49,8 @@ button.addEventListener("click", () => {
   sendAction(text);
 });
 
-// Comenzar la historia
+// Comenzar la historia automáticamente
 sendAction("Comienza la aventura");
+
 
 
